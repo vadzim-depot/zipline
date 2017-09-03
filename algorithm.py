@@ -137,6 +137,8 @@ from zipline.sources.requests_csv import PandasRequestsCSV
 from zipline.gens.sim_engine import MinuteSimulationClock
 from zipline.sources.benchmark_source import BenchmarkSource
 from zipline.zipline_warnings import ZiplineDeprecationWarning
+from zipline.finance.slippage import FixedSlippage
+from zipline.finance.commission import PerShare
 
 
 log = logbook.Logger("ZiplineLog")
@@ -319,6 +321,8 @@ class TradingAlgorithm(object):
                 data_frequency=self.data_frequency,
                 # Default to NeverCancel in zipline
                 cancel_policy=self.cancel_policy,
+                equity_slippage=kwargs.pop('equity_slippage', FixedSlippage(spread=0.0001)), #HARDCODED: for Forex
+                equity_commission=kwargs.pop('equity_commission', PerShare(0.0))              #HARDCODED:
             )
 
         # The symbol lookup date specifies the date to use when resolving
@@ -456,6 +460,11 @@ class TradingAlgorithm(object):
         self._in_before_trading_start = False
 
     def handle_data(self, data):
+
+        #print '================================================================'
+        #for line in traceback.format_stack():
+        #    print(line.strip())
+
         if self._handle_data:
             self._handle_data(self, data)
 

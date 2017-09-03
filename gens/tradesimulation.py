@@ -132,6 +132,11 @@ class AlgorithmSimulator(object):
                 for commission in new_commissions:
                     perf_tracker.process_commission(commission)
 
+            #print '========================================================'
+            #print current_data
+            #print algo
+            #print dt_to_use
+
             handle_data(algo, current_data, dt_to_use)
 
             # grab any new orders from the blotter, then clear the list.

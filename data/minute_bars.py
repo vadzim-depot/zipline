@@ -52,7 +52,7 @@ FUTURES_MINUTES_PER_DAY = 1440
 
 DEFAULT_EXPECTEDLEN = US_EQUITIES_MINUTES_PER_DAY * 252 * 15
 
-OHLC_RATIO = 1000
+OHLC_RATIO = 100000
 
 
 class BcolzMinuteOverlappingData(Exception):
@@ -1110,7 +1110,7 @@ class BcolzMinuteBarReader(MinuteBarReader):
         if self._last_get_value_dt_value == dt.value:
             minute_pos = self._last_get_value_dt_position
         else:
-            try:
+            try:                
                 minute_pos = self._find_position_of_minute(dt)
             except ValueError:
                 raise NoDataOnDate()
@@ -1119,7 +1119,15 @@ class BcolzMinuteBarReader(MinuteBarReader):
             self._last_get_value_dt_position = minute_pos
 
         try:
-            value = self._open_minute_file(field, sid)[minute_pos]
+            file = self._open_minute_file(field, sid)
+            value = file[minute_pos]
+            
+            #print minute_pos
+            #print file
+            #print value
+
+
+            #value = self._open_minute_file(field, sid)[minute_pos]
         except IndexError:
             value = 0
         if value == 0:
@@ -1130,6 +1138,9 @@ class BcolzMinuteBarReader(MinuteBarReader):
 
         if field != 'volume':
             value *= self._ohlc_ratio_inverse_for_sid(sid)
+
+        #print 'sid: %s; dt: %s; field: %s; value: %s'%(sid, dt, field, value)
+
         return value
 
     def get_last_traded_dt(self, asset, dt):
@@ -1203,6 +1214,13 @@ class BcolzMinuteBarReader(MinuteBarReader):
         int: The position of the given minute in the list of all trading
         minutes since market open on the first trading day.
         """
+
+        #print self._market_open_values
+        #print self._market_close_values
+        #print minute_dt.value
+        #print NANOS_IN_MINUTE        
+        #print minute_dt.value / NANOS_IN_MINUTE
+
         return find_position_of_minute(
             self._market_open_values,
             self._market_close_values,

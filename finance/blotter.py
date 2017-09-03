@@ -366,6 +366,12 @@ class Blotter(object):
                 for order, txn in \
                         slippage.simulate(bar_data, asset, asset_orders):
                     commission = self.commission_models[type(asset)]
+
+                    #print '-------------------------------------'
+                    #print asset
+                    #print self.commission_models
+                    #print commission
+
                     additional_commission = commission.calculate(order, txn)
 
                     if additional_commission > 0:

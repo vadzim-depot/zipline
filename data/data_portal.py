@@ -469,6 +469,9 @@ class DataPortal(object):
             ``field`` is 'volume' the value will be a int. If the ``field`` is
             'last_traded' the value will be a Timestamp.
         """
+
+        #print 'get_spot_value: asset: %s; field: %s'%(assets, field)
+
         assets_is_scalar = False
         if isinstance(assets, (AssetConvertible, PricingDataAssociable)):
             assets_is_scalar = True
@@ -630,6 +633,9 @@ class DataPortal(object):
             the ``field`` is 'volume' the value will be a int. If the ``field``
             is 'last_traded' the value will be a Timestamp.
         """
+
+        #print 'get_adjusted_value: asset: %s; field: %s'%(asset, field)
+
         if spot_value is None:
             # if this a fetcher field, we want to use perspective_dt (not dt)
             # because we want the new value as of midnight (fetcher only works
@@ -666,6 +672,8 @@ class DataPortal(object):
             # If not forward filling, we just want dt.
             query_dt = dt
 
+        #print '_get_minute_spot_value: query_dt: %s'%(query_dt)
+
         try:
             result = reader.get_value(asset.sid, query_dt, column)
         except NoDataOnDate:
@@ -673,6 +681,8 @@ class DataPortal(object):
                 return 0
             else:
                 return np.nan
+
+        #print 'result: %s'%(result)
 
         if not ffill or (dt == query_dt) or (dt.date() == query_dt.date()):
             return result

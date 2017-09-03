@@ -11,14 +11,14 @@ boDebug = True # Set True to get trace messages
 
 from zipline.utils.cli import maybe_show_progress
 
-def eurusd_ingest(symbols,start=None,end=None):
+def ingest_csv(symbols,start=None,end=None):
 
     # strict this in memory so that we can reiterate over it.
     # (Because it could be a generator and they live only once)
     tuSymbols = tuple(symbols)
 
     if boDebug:
-        print "Entering eurusd_bundle.  tuSymbols=",tuSymbols
+        print "Entering Forex bundle.  tuSymbols=",tuSymbols
 
     # Define our custom ingest function
     def ingest(environ,
@@ -60,9 +60,10 @@ def eurusd_ingest(symbols,start=None,end=None):
             if boDebug:
                print "S=",S,"IFIL=",IFIL
             dfData=pd.read_csv(IFIL,index_col='Date',parse_dates=True).sort_index()
+
             if boDebug:
                print "read_csv dfData",type(dfData),"length",len(dfData)
-               print dfData
+               #print dfData
                print
             #dfData = dfData.drop('Time', 1)
             dfData.rename(
@@ -75,7 +76,7 @@ def eurusd_ingest(symbols,start=None,end=None):
                 },
                 inplace=True,
             )
-            dfData['volume']=dfData['volume']*1000000
+            dfData['volume']=dfData['volume']*100000000
             liData.append((iSid,dfData))
 
             # the start date is the date of the first trade and

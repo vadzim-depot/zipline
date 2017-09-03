@@ -30,6 +30,8 @@ from zipline.finance.transaction import create_transaction
 from zipline.utils.cache import ExpiringCache
 from zipline.utils.dummy import DummyMapping
 
+import traceback
+
 SELL = 1 << 0
 BUY = 1 << 1
 STOP = 1 << 2
@@ -190,6 +192,10 @@ class VolumeShareSlippage(SlippageModel):
 
         super(VolumeShareSlippage, self).__init__()
 
+        #print "========================================="
+        #for line in traceback.format_stack():
+        #    print(line.strip())
+
         self.volume_limit = volume_limit
         self.price_impact = price_impact
 
@@ -272,6 +278,13 @@ class FixedSlippage(SlippageModel):
 
     def process_order(self, data, order):
         price = data.current(order.asset, "close")
+
+        #print "========================================="
+        #for line in traceback.format_stack():
+        #    print(line.strip())
+
+        #print '--------------------'
+        #print '%s %s' % (price, price + (self.spread / 2.0 * order.direction))
 
         return (
             price + (self.spread / 2.0 * order.direction),
